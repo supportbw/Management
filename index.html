@@ -244,6 +244,92 @@ body{font-family:"DM Sans",sans-serif;background:var(--bg);color:var(--text);dis
 </style>
 </head>
 <body>
+<!-- PASSWORD GATE: inject after <body> tag -->
+<div id="bw-gate" style="
+  position:fixed;inset:0;z-index:99999;
+  background:linear-gradient(160deg,#000d2e 0%,#001a4d 50%,#000a1e 100%);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'DM Sans',system-ui,sans-serif;
+">
+  <div style="
+    background:rgba(255,255,255,0.04);
+    border:1px solid rgba(255,255,255,0.10);
+    border-radius:20px;
+    padding:48px 40px 40px;
+    width:100%;max-width:400px;
+    backdrop-filter:blur(12px);
+    box-shadow:0 32px 80px rgba(0,0,0,0.6);
+    text-align:center;
+  ">
+    <img src="https://supportbw.github.io/Management/bwlogowhite.png"
+         onerror="this.style.display='none'"
+         style="width:160px;margin:0 auto 28px;display:block;mix-blend-mode:screen;" />
+    <p style="color:rgba(255,255,255,0.35);font-size:12px;letter-spacing:.15em;text-transform:uppercase;margin-bottom:28px;">Secure Access</p>
+    <div style="position:relative;margin-bottom:16px;">
+      <input id="bw-pw" type="password" placeholder="Enter password"
+        style="
+          width:100%;padding:14px 16px;
+          background:rgba(255,255,255,0.07);
+          border:1px solid rgba(255,255,255,0.15);
+          border-radius:10px;
+          color:#fff;font-size:15px;
+          outline:none;
+          transition:border .2s;
+          box-sizing:border-box;
+        "
+        onkeydown="if(event.key==='Enter')bwLogin()"
+        onfocus="this.style.borderColor='rgba(0,102,204,0.7)'"
+        onblur="this.style.borderColor='rgba(255,255,255,0.15)'"
+      />
+    </div>
+    <p id="bw-err" style="color:#ff6b6b;font-size:13px;min-height:18px;margin-bottom:12px;"></p>
+    <button onclick="bwLogin()" style="
+      width:100%;padding:14px;
+      background:linear-gradient(135deg,#0066cc,#003399);
+      border:none;border-radius:10px;
+      color:#fff;font-size:15px;font-weight:600;
+      cursor:pointer;letter-spacing:.02em;
+      transition:opacity .2s;
+    " onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">
+      Sign In
+    </button>
+    <p style="color:rgba(255,255,255,0.15);font-size:11px;margin-top:24px;">
+      Bluewater Management Platform &mdash; Authorised Users Only
+    </p>
+  </div>
+</div>
+<script>
+(function(){
+  // ── SET YOUR PASSWORD HERE ──
+  var PASSWORD = "Bluewater2025!";
+  // ────────────────────────────
+  var KEY = "bw_auth_" + btoa(location.pathname);
+  if(sessionStorage.getItem(KEY)==="1"){
+    document.getElementById("bw-gate").style.display="none";
+  }
+  window.bwLogin = function(){
+    var v = document.getElementById("bw-pw").value;
+    if(v === PASSWORD){
+      sessionStorage.setItem(KEY,"1");
+      var g = document.getElementById("bw-gate");
+      g.style.transition="opacity .4s";
+      g.style.opacity="0";
+      setTimeout(function(){g.remove();},400);
+    } else {
+      var e = document.getElementById("bw-err");
+      var i = document.getElementById("bw-pw");
+      e.textContent = "Incorrect password. Please try again.";
+      i.value="";
+      i.style.borderColor="rgba(255,80,80,0.7)";
+      setTimeout(function(){
+        i.style.borderColor="rgba(255,255,255,0.15)";
+      },1500);
+      i.focus();
+    }
+  };
+})();
+</script>
+
 
 <!-- SIDEBAR -->
 <aside class="sb">
